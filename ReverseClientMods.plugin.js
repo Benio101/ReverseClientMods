@@ -28,14 +28,14 @@ module.exports = (() => {
 			author: 'Benio',
 			authorId: '231850998279176193',
 			invite: 'reversecommunity',
-			version: '1.0.0',
+			version: '1.1.0',
 		},
 		changeLog: {
-			added: {
-				'TOR': 'Dodano możliwość aktualizacji treści kanału z opisem modyfikacji The Other Roles',
-			},
+			// added: {},
 			// fixed: {},
-			// improved: {},
+			improved: {
+				'TOR 2.7.0': 'Updated The Other Roles to v2.7.0',
+			},
 		},
 
 		// milliseconds
@@ -705,6 +705,9 @@ Ustawienie dla roli Zabieracza.
 
 > **Shifter Spawn Chance**
 > Szansa na pojawienie się Zabieracza w grze.
+> 
+> **Shifter Shifts Modifiers**
+> Czy można ukraść rolę Kochanka lub OszuKochanka oraz czy można ukrać Tarczę Medyka.
 
 ​`);
 		await actions.send_embed(channels.tor.role, embed_colors.blue, null, spacer_text);
@@ -993,6 +996,43 @@ Ustawienie *Jackal/Sidekick Kill Cooldown* jest wspólne dla ról Szakal oraz Zi
 		
 		// Send impostor roles
 		log('Send impostor roles: Start');
+
+		// Bounty Hunter
+		roles_id.impostors['Bounty Hunter'] = (await actions.send_image(channels.tor.role, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/role_bounty_hunter.png', embed_colors.red, 'Bounty Hunter', '• Nazwa: **Bounty Hunter** (Łowca Głów)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_embed(channels.tor.role, embed_colors.red, 'Cel', 'Łowca Głów to oszust, który stale otrzymuje graczy jako cele do zabicia (gracze będący celami Łowcy Głów o tym nie wiedzą). Cel Łowcy Nagród zmienia się po każdym spotkaniu i po określonym czasie. Jeśli Łowca Nagród zabije swój cel, jego czas odnowienia będzie znacznie krótszy niż zwykle. Zabicie gracza, który nie jest jego aktualnym celem, skutkuje wydłużeniem czasu odnowienia zabójstwa. Jeśli opcja *Show Arrow Pointing Towards The Bounty* jest włączona, pojawi się strzałka wskazująca cel.', 'Zdolność pasywna');
+		await actions.send_message(channels.tor.role, `​
+
+**Uwagi**
+
+    • Celem Łowcy Głów nie może być ani oszust, ani Szpieg.
+    • Zabicie celu zresetuje licznik i wybrany zostanie nowy cel.
+
+​`);
+		await actions.send_message(channels.tor.role, `​
+
+**Ustawienia**
+Ustawienia dla roli Łowcy Głów.
+
+> **Bounty Hunter Spawn Chance**
+> Szansa na pojawienie się Łowcy Głów w grze.
+> 
+> **Duration After Which Bounty Changes**
+> Czas, po którym Cel ulega zmianie.
+> 
+> **Cooldown After Killing Bounty**
+> Czas odnowienia się zabójstwa po zabiciu celu.
+> 
+> **Additional Cooldown After Killing Others**
+> Dodatkowy czas po zabiciu ofiary nie będącej celem (dodawany do zwykłego czasu zabójstwa).
+> 
+> **Show Arrow Pointing Towards The Bounty**
+> Pokazuje strzałkę na cel Łowcy Głów.
+> 
+> **Bounty Hunter Arrow Update Intervall**
+> Jak często aktualizuje się pozycja strzałki wskazującej na cel Łowcy Głów.
+
+​`);
+		await actions.send_embed(channels.tor.role, embed_colors.blue, null, spacer_text);
 
 		// Camouflager
 		roles_id.impostors['Camouflager'] = (await actions.send_image(channels.tor.role, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/role_camouflager.png', embed_colors.red, 'Camouflager', '• Nazwa: **Camouflager** (Kamuflażysta)\n• Drużyna: **Impostors** (Oszuści)')).body.id;

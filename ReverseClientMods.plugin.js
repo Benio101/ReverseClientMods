@@ -81,6 +81,14 @@ module.exports = (() => {
 	// ------------------------------------------------------------------------------------------------------------
 
 	const css = `
+		#channel-context-${config.info.name + '-update-tou-desc'} {
+			color: #4fdc7b;
+		}
+		#channel-context-${config.info.name + '-update-tou-desc'}[class*=focus] {
+			color: #FFFFFF;
+			background: #3ba55c;
+		}
+
 		#channel-context-${config.info.name + '-update-tor-desc'} {
 			color: #4fdc7b;
 		}

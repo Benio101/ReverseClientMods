@@ -28,10 +28,12 @@ module.exports = (() => {
 			author: 'Benio',
 			authorId: '231850998279176193',
 			invite: 'reversecommunity',
-			version: '1.1.1',
+			version: '1.2.0',
 		},
 		changeLog: {
-			// added: {},
+			added: {
+				'Town Of Us': 'Dodano treść kanału #role do aktualizacji'
+			},
 			// fixed: {},
 			// improved: {},
 		},
@@ -53,6 +55,9 @@ module.exports = (() => {
 	// ------------------------------------------------------------------------------------------------------------
 
 	const channels = {
+		tou: {
+			role: ['842154145695137832'],
+		},
 		tor: {
 			role: ['842550568757231666'],
 		},
@@ -253,6 +258,768 @@ module.exports = (() => {
 				await actions.delete_message(message.channel_id, message.id);
 	}
 
+	actions.update_tou_desc = async (guild_id, channel_id) => {
+		log('Update channel: Start');
+		
+		const roles_id = {
+			crewmates: {},
+			neutrals: {},
+			impostors: {},
+		};
+
+		// Purge channel
+		log('Purge channel: Start');
+		await actions.purge_channel(channel_id);
+		log('Purge channel: Complete');
+
+		// Prepare top toc placeholders
+		log('Prepare top toc placeholders: Start');
+		const toc_top_crewmates_id = (await actions.send_message(channel_id, '​')).body.id;
+		const toc_top_neutrals_id = (await actions.send_message(channel_id, '​')).body.id;
+		const toc_top_impostors_id = (await actions.send_message(channel_id, '​')).body.id;
+		log('Prepare top toc placeholders: Complete');
+
+		const spacer_text =
+				`[Role wspólników](https://discord.com/channels/${guild_id}/${channel_id}/${toc_top_crewmates_id})\n`
+			+	`[Role neutralne](https://discord.com/channels/${guild_id}/${channel_id}/${toc_top_neutrals_id})\n`
+			+	`[Role oszustów](https://discord.com/channels/${guild_id}/${channel_id}/${toc_top_impostors_id})`
+		;
+
+		// Send crewmate roles
+		log('Send crewmate roles: Start');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/roles_crewmates.png', embed_colors.green);
+		
+		// Altruist
+		roles_id.crewmates['Altruist'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_altruist.png', embed_colors.green, 'Altruist', '• Nazwa: **Altruist** (Altruista)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_revive.png', embed_colors.green, 'Revive (Wskrzeszenie)', 'Altruista poświęca się, by spróbować wskrzesić najbliższego gracza. Po upływie czasu określonego za pomocą opcji *Altruist Revive Duration*, gracz zostanie wskrzeszony, o ile proces wskrzeszania nie zostanie przerwany. Jeśli opcja *Target\'s body disappears on beginning of revive* jest aktywna, ciało wskrzeszanego gracza zniknie przy rozpoczęciu wskrzeszania.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Altruisty.
+
+> **Altruist** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Altruisty w grze.
+> 
+> **Altruist Revive Duration** (Typ: Czas, Domyślnie: 10s)
+> Czas wskrzeszania martwej postaci.
+> 
+> **Target's body disappears on beginning of revive** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy ciało wskrzeszanej postaci ma zniknąć na początku wskrzeszania.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Engineer
+		roles_id.crewmates['Engineer'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_engineer.png', embed_colors.green, 'Engineer', '• Nazwa: **Engineer** (Inżynier)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/action_vent.png', embed_colors.green, 'Vent (Wejdź do Otworu Wentylacyjnego)', 'Inżynier może korzystać z otworów wentylacyjnych (tak, jak zwykli oszuści).', 'Zdolność aktywna');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_fix.png', embed_colors.green, 'Fix (Napraw)', 'Inżynier naprawia sabotaż z dowolnego miejsca na mapie.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Inżyniera.
+
+> **Engineer** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Inżyniera w grze.
+> 
+> **Engineer Fix Per** (Typ: Enumeracyjny, Domyślnie: Round)
+> Limit Napraw
+> 
+>     • *Round*
+>        Inżynier może użyć Naprawy tylko raz na rundę.
+> 
+>     • *Game*
+>        Inżynier może użyć Naprawy tylko raz na grę.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Investigator
+		roles_id.crewmates['Investigator'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_investigator.png', embed_colors.green, 'Investigator', '• Nazwa: **Investigator** (Badacz)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.green, 'Footprints (Ślady stóp)', 'Badacz widzi ślady stóp pozostawione przez inne postaci, które znikają po pewnym czasie.', 'Zdolność pasywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Badacza.
+
+> **Investigator** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Badacza w grze.
+> 
+> **Footprint Size** (Typ: Liczba, Domyślnie: 4)
+> Rozmiar śladów stóp w skali od 1 do 10.
+> 
+> **Footprint Interval** (Typ: Czas, Domyślnie: 1s)
+> Czas pomiędzy kolejnymi śladami stóp.
+> 
+> **Footprint Duration** (Typ: Czas, Domyślnie: 10s)
+> Jak długo ślady stóp pozostają widoczne.
+> 
+> **Anonymous Footprint** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy ślady stóp wszystkich postaci mają być szare.
+> 
+> **Footprint Vent Visible** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy ślady stóp są widoczne w pobliżu otwórów wentylacyjnych.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Lover
+		roles_id.crewmates['Lover'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_lovers.png', embed_colors.green, 'Lover', '• Nazwa: **Lover** (Kochanek)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.green, 'Love (Miłość)', 'Kochanek zawsze pojawia się w parze z drugim Kochankiem. Kochankowie wybrani są losowo spośród wspólników oraz oszustów. Głównym celem Kochanków jest wspólnie przetrwać. Jeśli Kochankowanie pozostaną żywi wśród ostatnich 3 graczy, wygrywają. Kochankowie mają również dostęp do prywatnego czatu Kochanków, widocznego tylko dla nich pomiędzy spotkaniami. Kochankowanie mogą jednak również wygrać ze swoją drużyną, dlatego nie znają roli drugiego kochanka.', 'Zdolność pasywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Kochanka.
+
+> **Lovers** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Kochanków w grze.
+> 
+> **Both Lovers Die** (Typ: Logiczny, Domyślnie: Prawda)
+> Czy po śmierci jednego Kochanka umiera drugi.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Mayor
+		roles_id.crewmates['Mayor'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_mayor.png', embed_colors.green, 'Mayor', '• Nazwa: **Mayor** (Burmistrz)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.green, 'Vote Bank (Bank Głosów)', 'Burmistrz ma dostęp do Banku Głosów, który określa, ile głosów mogą oddać. Burmistrz ma możliwość wstrzymania się od głosu, by dodać głos do Banku Głosów. Tak długo, jak jeszcze wszyscy nie oddali głosu, Burmistrz może oddać dowolną liczbę głosów z Banku Głosów.', 'Zdolność specjalna');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_abstain.png', embed_colors.blue, 'Przycisk', '• Abstain (Wstrzymanie się od głosu)');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Burmistrza.
+
+> **Mayor** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Burmistrza w grze.
+> 
+> **Initial Mayor Vote Bank** (Typ: Liczba, Domyślnie: 1)
+> Liczba głosów w Banku Głosów na początku gry.
+> 
+> **Mayor Votes Show Anonymous** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy głosy Burmistrza pojawiają się anonimowo.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Medic
+		roles_id.crewmates['Medic'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_medic.png', embed_colors.green, 'Medic', '• Nazwa: **Medic** (Medyk)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_shield.png', embed_colors.green, 'Shield (Tarcza)', 'Medyk daje wybranej postaci tarczę, która uczyni go nieśmiertelnym, dopóki Medyk nie umrze. Gracz z Tarczą Medyka nie może zostać zabity, nie można mu ukraść roli, ani nie może zostać zhakowany. Może natomiast popełnić samobójstwo.', 'Zdolność aktywna');
+		await actions.send_embed(channel_id, embed_colors.green, 'Report (Raport)', 'Medyk będzie wiedział, jak dawno temu zginęła postać, której ciało zgłasza oraz może uzyskać wskazówki dotyczące tożsamości zabójcy.', 'Zdolność pasywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Uwagi**
+
+	• Kolory jaśniejsze: Pink, Orange, Yellow, White, Cyan, Lime, Rose, Banana, Gray, Coral, Sky Blue, Hot Pink, Turquoise, Lilac, Rainbow, Azure
+	• Kolory ciemniejsze: Red, Blue, Green, Black, Purple, Brown, Maroon, Tan, Watermelon, Chocolate, Beige
+
+​`);
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Medyka.
+
+> **Medic** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Medyka w grze.
+> 
+> **Show Shielded Player** (Typ: Enumeracyjny, Domyślnie: Self)
+> Kto będzie widział Tarczę Medyka.
+> 
+>     • *Self*
+>        Osoba z Tarczą Medyka.
+> 
+>     • *Medic*
+>        Medyk.
+> 
+>     • *Self + Medic*
+>        Medyk oraz osoba z Tarczą Medyka.
+> 
+>     • *Everyone*
+>        Wszyscy.
+> 
+> **Show Medic Reports** (Typ: Logiczny, Domyślnie: Prawda)
+> Czy zdolność pasywna Oględziny zwłok jest aktywna.
+> 
+> **Time Where Medic Reports Will Have Name** (Typ: Czas, Domyślnie: 0s)
+> Jeśli od śmierci zgłaszanej postaci do Raportu minęło mniej, niż wskazana wartość, Raport Medyka będzie zawierał nick zabójcy.
+> 
+> **Time Where Medic Reports Will Have Color Type** (Typ: Czas, Domyślnie: 15s)
+> Jeśli od śmierci zgłaszanej postaci do Raportu minęło mniej, niż wskazana wartość, Raport Medyka będzie zawierał typ koloru zabójcy (jaśniejszy lub ciemniejszy).
+> 
+> **Who gets murder attempt indicator** (Typ: Enumeracyjny, Domyślnie: Medic)
+> Kto będzie wiedział, że doszło do próby zabójstwa osoby z Tarczą Medyka.
+> 
+>     • *Medic*
+>        Medyk.
+> 
+>     • *Shielded*
+>        Osoba z Tarczą Medyka.
+> 
+>     • *Everyone*
+>        Wszyscy.
+> 
+>     • *Nobody*
+>        Nikt.
+> 
+> **Shield breaks on murder attempt** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Tarcza Medyka ma zostać zniszczona przy próbie zabójstwa.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Seer
+		roles_id.crewmates['Seer'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_seer.png', embed_colors.green, 'Seer', '• Nazwa: **Seer** (Widzący)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_reveal.png', embed_colors.green, 'Reveal (Ujawnienie)', 'Ujawnia rolę gracza (jeśli opcja *Info that Seer sees* jest ustawiona na *Role*) albo drużynę, do której należy (jeśli opcja *Neutrals show up as Impostors* jest włączona, role neutralne pokazują się jako oszuści). Jeśli opcja *Who Sees That They Are Revealed* jest ustawiona na *Crewmates*, *Impostors + Neutral* lub *All*, wybrane role (odpowiednio wspólnicy, niewspólnicy lub wszyscy) poznają rożsamość Widzącego po użyciu na nich zdolności.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Widzącego.
+
+> **Seer** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Widzącego w grze.
+> 
+> **Seer Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Ujawnienie.
+> 
+> **Info that Seer sees** (Typ: Enumeracyjny, Domyślnie: Role)
+> Jaką informację widzi Widzący po użyciu umiejętności Ujawnienie.
+> 
+>     • *Role*
+>        Dokładna rola sprawdzanej osoby.
+> 
+>     • *Team*
+>        Drużyna, do której należy sprawdzana osoba.
+> 
+> **Who Sees That They Are Revealed** (Typ: Enumeracyjny, Domyślnie: Crewmates)
+> Kto widzi, że został sprawdzony.
+> 
+>     • *Crewmates*
+>        Wspólnicy.
+> 
+>     • *Impostors + Neutral*
+>        Oszuści oraz role neutralne.
+> 
+>     • *All*
+>        Wszyscy.
+> 
+>     • *Nobody*
+>        Nikt.
+> 
+> **Neutrals show up as Impostors** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy role neutralne mają pojawiać się jako oszuści.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Sheriff
+		roles_id.crewmates['Sheriff'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_sheriff.png', embed_colors.green, 'Sheriff', '• Nazwa: **Sheriff** (Szeryf)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/action_kill.png', embed_colors.green, 'Shoot (Strzał)', 'Szeryf może zabijać oszustów oraz wybrane role neutralne. Jeśli jednak spróbuje zabić wspólnika lub rolę neutralną, której zabijać nie może, Szeryf zginie zamiast zabić.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Szeryfa.
+
+> **Sheriff** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Szeryfa w grze.
+> 
+> **Show Sheriff** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy wszyscy mają widzieć, kto jest Szeryfem.
+> 
+> **Sheriff Miskill Kills Crewmate** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy nietrafione strzały zabijają wspólników.
+> 
+> **Sheriff Kills Jester** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Szeryf może zabić Błazna.
+> 
+> **Sheriff Kills The Glitch** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Szeryf może zabić Usterkę.
+> 
+> **Sheriff Kills Arsonist** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Szeryf może zabić Podpalacza.
+> 
+> **Sheriff Kill Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Strzał.
+> 
+> **Sheriff can report who they've killed** (Typ: Logiczny, Domyślnie: Prawda)
+> Czy Szeryf może zgłaszać ciała postaci, które zabił.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Snitch
+		roles_id.crewmates['Snitch'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_snitch.png', embed_colors.green, 'Snitch', '• Nazwa: **Snitch** (Kapuś)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.green, 'Reveal (Ujawnienie)', 'Kiedy Kapuś ukończy wszystkie zadania, pojawią się Strzałki (widoczne tylko dla Kapusia), które wskazują na oszustów. Kiedy Kapusiowi zostanie ostatnie zadanie do wykonania, zostanie ujawniony oszustom, również za pomocą Strzałki.', 'Zdolność pasywna');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/indicator_arrow.png', embed_colors.blue, 'Wskaźnik', '• Strzałka');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Kapusia.
+
+> **Snitch** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Kapusia w grze.
+> 
+> **Snitch knows who they are on Game Start** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Kapuś zna swoją rolę od początku gry.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Spy
+		roles_id.crewmates['Spy'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_spy.png', embed_colors.green, 'Spy', '• Nazwa: **Spy** (Szpieg)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.green, 'Spy (Szpiegostwo)', 'Szpieg widzi dokładne kolory postaci na panelu administracyjnym oraz dokładne czasy zgonów postaci na monitorze życia.', 'Zdolność pasywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Szpiega.
+
+> **Spy** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Szpiega w grze.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Swapper
+		roles_id.crewmates['Swapper'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_swapper.png', embed_colors.green, 'Swapper', '• Nazwa: **Swapper** (Zamieniacz)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_swap.png', embed_colors.green, 'Swap (Zamiana Głosów)', 'Podczas spotkań Zamieniacz może zamienić głosy dwóch osób (tj. wszystkie głosy, które otrzymał gracz A, zostaną przekazane graczowi B i odwrotnie).', 'Zdolność specjalna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Zamieniacza.
+
+> **Swapper** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Zamieniacza w grze.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		
+		// Time Lord
+		roles_id.crewmates['Time Lord'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_time_lord.png', embed_colors.green, 'Time Lord', '• Nazwa: **Time Lord** (Władca Czasu)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_rewind.png', embed_colors.green, 'Rewind (Cofnięcie Czasu)', 'Władca Czasu cof czas o czas określony za pomocą opcji *Rewind Duration*. Jeśli opcja *Revive During Rewind* jest włączona, cofnięcie czasu przywróci do życia postaci, które w tym czasie umarły.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Władcy Czasu.
+
+> **Time Lord** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Władcy Czasu w grze.
+> 
+> **Revive During Rewind** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Cofnięcie Czasu może wskrzeszać postaci.
+> 
+> **Rewind Duration** (Typ: Czas, Domyślnie: 3s)
+> Ile czasu cofa Cofnięcia Czasu.
+> 
+> **Rewind Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Cofnięcie Czasu.
+> 
+> **Time Lord can use Vitals** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Władca Czasu może korzystać z monitora życia.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		log('Send crewmate roles: Complete');
+
+		// Send neutral roles
+		log('Send neutral roles: Start');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/roles_neutrals.png', embed_colors.gray);
+
+		// Arsonist
+		roles_id.neutrals['Arsonist'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_arsonist.png', embed_colors.gray, 'Arsonist', '• Nazwa: **Arsonist** (Podpalacz)\n• Drużyna: **Neutral** (Neutralna)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_douse.png', embed_colors.gray, 'Douse (Podlej)', 'Oblewa najbliższą postać benzyną.', 'Zdolność aktywna');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_ignite.png', embed_colors.gray, 'Ignite (Podpal)', 'Podpala wszystkich żywych graczy i wygrywa grę. Opcja jest dostępna dopiero, gdy wszyscy żywi gracze będą oblani benzyną.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Podpalacza.
+
+> **Arsonist** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Podpalacza w grze.
+> 
+> **Douse Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Podlej.
+> 
+> **Game keeps going so long as Arsonist is alive** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy gra będzie kontynuowana po śmierci Podpalacza.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Executioner
+		roles_id.neutrals['Executioner'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_executioner.png', embed_colors.gray, 'Executioner', '• Nazwa: **Executioner** (Kat)\n• Drużyna: **Neutral** (Neutralna)')).body.id;
+		await actions.send_message(channel_id, `​
+
+**Uwaga**
+
+    • Kat nie ma żadnych zadań, musi wygrać grę solo.
+    • Zadaniem Kata jest wysłosować konkretną postać.
+    • Kat wygra, jeśli jego cel zostanie wygłosowany podczas spotkania.
+
+​`);
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Kata.
+
+> **Executioner** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Kata w grze.
+> 
+> **Executioner becomes on Target Dead** (Typ: Enumeracyjny, Domyślnie: Crewmate)
+> Kim stanie się Kat po śmierci swojego celu.
+> 
+>     • *Crewmate*
+>        Wspólnik.
+> 
+>     • *Jester*
+>        Błazen.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Jester
+		roles_id.neutrals['Jester'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_jester.png', embed_colors.gray, 'Jester', '• Nazwa: **Jester** (Błazen)\n• Drużyna: **Neutral** (Neutralna)')).body.id;
+		await actions.send_message(channel_id, `​
+
+**Uwaga**
+
+    • Błazen nie ma żadnych zadań, musi wygrać grę solo.
+    • Błazen wygra, jeśli zostanie wygłosowany podczas spotkania.
+
+​`);
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Błazna.
+
+> **Jester** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Błazna w grze.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Glitch
+		roles_id.neutrals['Glitch'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_glitch.png', embed_colors.gray, 'The Glitch', '• Nazwa: **The Glitch** (Usterka)\n• Drużyna: **Neutral** (Neutralna)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.gray, 'Hack (Hak)', 'Uniemożliwia zhakowanej postaci zgłaszania ciał oraz wykonywania zadań. Zhakowana postać nie może robić nic poza chodzeniem po mapie.', 'Zdolność aktywna');
+		await actions.send_embed(channel_id, embed_colors.gray, 'Mimic (Imitacja)', 'Usterka imituje wybraną postać, wyglądając dokładnie jak ona.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Usterki.
+
+> **The Glitch** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Usterki w grze.
+> 
+> **Mimic Cooldown** (Typ: Czas, Domyślnie: 30s)
+> Czas odnowienia się umiejętności aktywnej Imitacja.
+> 
+> **Mimic Duration** (Typ: Czas, Domyślnie: 10s)
+> Czas trwania Imitacji.
+> 
+> **Hack Cooldown** (Typ: Czas, Domyślnie: 30s)
+> Czas odnowienia się umiejętności aktywnej Hak.
+> 
+> **Hack Duration** (Typ: Czas, Domyślnie: 10s)
+> Czas trwania Haka.
+> 
+> **Glitch Kill Cooldown** (Typ: Czas, Domyślnie: 30s)
+> Czas odnowienia się zabójstwa.
+> 
+> **Initial Glitch Kill Cooldown** (Typ: Czas, Domyślnie: 10s)
+> Początkowy czas odnowienia się zabójstwa.
+> 
+> **Glitch Hack Distance** (Typ: Enumeracyjny, Domyślnie: Short)
+> Dystans, z którego Usterka może hakować innych.
+> 
+>     • *Short*
+>        Bliski.
+> 
+>     • *Normal*
+>        Normalny.
+> 
+>     • *Long*
+>        Daleki.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Phantom
+		roles_id.neutrals['Phantom'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_phantom.png', embed_colors.gray, 'Phantom', '• Nazwa: **Phantom** (Upiór)\n• Drużyna: **Neutral** (Neutralna)')).body.id;
+		await actions.send_message(channel_id, `​
+
+**Uwaga**
+
+    • Upiór to rola neutralna z własnym warunkiem zwycięstwa.
+    • Upiór po śmierci staje się częściowo niewidzialny i musi wykonać wszystkie zadania, nie dając się złapać.
+
+​`);
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Upiora.
+
+> **Phantom** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Upiora w grze.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Shifter
+		roles_id.neutrals['Shifter'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_shifter.png', embed_colors.gray, 'Shifter', '• Nazwa: **Shifter** (Zabieracz)\n• Drużyna: **Neutral** (Neutralna)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_shift.png', embed_colors.gray, 'Shift (Przejęcie Roli)', 'Przejmuje rolę wybranej postaci wraz z jej pozostałymi zadaniami do wykonania. Cel Przejęcia Roli otrzymuje rolę wspólnika. Jeśli celem Przejęcia Roli był zwykły wspólnik, zadania pozostałe do wykonania zostają zamienione. Próba Przejęcia Roli od oszusta kończy się porażką i zabija Zabieracza.', 'Zdolność aktywna');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/indicator_shift.png', embed_colors.blue, 'Wskaźnik', '• Zabrana rola');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Zabieracza.
+
+> **Shifter** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Zabieracza w grze.
+> 
+> **Shifter Cooldown** (Typ: Czas, Domyślnie: 30s)
+> Czas odnowienia się umiejętności aktywnej Przejęcie Roli.
+> 
+> **Who gets the Shifter role on Shift** (Typ: Enumeracyjny, Domyślnie: Non-Impostors)
+> Kto dostaje rolę Zabieracza po Przejęciu Roli.
+> 
+>     • *Non-Impostors*
+>        Wszyscy poza oszustami.
+> 
+>     • *Regular Crewmates*
+>        Zwykli wspólnicy.
+> 
+>     • *Nobody*
+>        Nikt.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		log('Send neutral roles: Complete');
+		
+		// Send impostor roles
+		log('Send impostor roles: Start');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/roles_impostors.png', embed_colors.red);
+
+		// Assassin
+		roles_id.impostors['Assassin'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_assassin.png', embed_colors.red, 'Assassin', '• Nazwa: **Assassin** (Zamachowiec)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_guess.png', embed_colors.red, 'Guess (Zgadywanie)', 'Podczas spotkania Zamachowiec może zgadywać role postaci niebędących oszustami. Jeśli trafi rolę postaci, zastrzeli ją. W przeciwnym razie sam zginie.', 'Zdolność specjalna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Zamachowca.
+
+> **Assassin** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Zamachowca w grze.
+> 
+> **Assassin Kill** (Typ: Liczba, Domyślnie: 1)
+> Liczba zabójstw, których może dokonać Zamachowiec za pomocą Zgadywania.
+> 
+> **Assassin Guess Crewmate** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Zamachowiec może Zgadywać rolę zwykłego wspólnika.
+> 
+> **Assassin Guess Neutral** (Typ: Logiczny, Domyślnie: Fałsz)
+> Czy Zamachowiec może Zgadywać role neutralne.
+> 
+> **Assassin Multiple Kill** (Typ: Logiczny, Domyślnie: Prawda)
+> Czy Zamachowiec może Zgadywać wielokrotnie podczas jednego spotkania.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Camouflager
+		roles_id.impostors['Camouflager'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_camouflager.png', embed_colors.red, 'Camouflager', '• Nazwa: **Camouflager** (Kamuflażysta)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_camouflage.png', embed_colors.red, 'Camouflage (Kamuflaż)', 'Zamienia wszystkich w bezbarwne postaci, zmieniając ich kolor w szary i usuwając ich nazwy, sprawiając, że stają się nierozpoznawalni.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Kamuflażysty.
+
+> **Camouflager** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Kamuflażysty w grze.
+> 
+> **Camouflage Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Kamuflaż.
+> 
+> **Camouflage Duration** (Typ: Czas, Domyślnie: 10s)
+> Czas trwania umiejętności aktywnej Kamuflaż.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Janitor
+		roles_id.impostors['Janitor'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_janitor.png', embed_colors.red, 'Janitor', '• Nazwa: **Janitor** (Woźny)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_clean.png', embed_colors.red, 'Clean (Sprzątnij Ciało)', 'Sprząta martwe ciało (usuwa je z gry)', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​
+
+**Uwaga**
+
+    • Czas odnowienia się zabijania oraz umiejętności aktywnej Sprzątnij Ciało jest wspólny, więc Woźny powinien wybrać, czy woli zabić, czy sprzątnąć ciało.
+
+​`);
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Woźnego.
+
+> **Janitor** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Woźnego w grze.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Miner
+		roles_id.impostors['Miner'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_miner.png', embed_colors.red, 'Miner', '• Nazwa: **Miner** (Górnik)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_mine.png', embed_colors.red, 'Mine (Wykop)', 'Tworzy nowy otwór wentylacyjny lub nową dziurę w ziemi. Nowe otwory połączone są wyłącznie ze sobą.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Górnika.
+
+> **Miner** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Górnika w grze.
+> 
+> **Mine Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Wykop.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Morphling
+		roles_id.impostors['Morphling'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_morphling.png', embed_colors.red, 'Morphling', '• Nazwa: **Morphling** (Zmiennokształtny)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_sample.png', embed_colors.red, 'Sample (Próbka)', 'Weź próbkę postaci.', 'Zdolność aktywna');
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_morph.png', embed_colors.red, 'Morph (Zmiana)', 'Na określony czas, przyjmij wygląd postaci z Próbki.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Zmiennokształtnego.
+
+> **Morphling** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Zmiennokształtnego w grze.
+> 
+> **Morph Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Zmiana.
+> 
+> **Morph Duration** (Typ: Czas, Domyślnie: 10s)
+> Czas trwania umiejętności aktywnej Zmiana.
+
+​`);
+		await actions.send_message(channel_id, `​
+
+**Uwaga**
+
+    • W celu zbalansowania rozgrywki, Zmiennokształtny nie może korzystać z otworów wentylacyjnych.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Swooper
+		roles_id.impostors['Swooper'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_swooper.png', embed_colors.red, 'Swooper', '• Nazwa: **Swooper** (Znikający)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/action_swoop.png', embed_colors.red, 'Swoop (Niewidzialność)', 'Na czas okreslony opcją *Swooper Duration*, Znikający staje się niewidzialny.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Znikającego.
+
+> **Swooper** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Znikającego w grze.
+> 
+> **Swooper Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Niewidzialność.
+> 
+> **Swooper Duration** (Typ: Czas, Domyślnie: 10s)
+> Czas trwania umiejętności aktywnej Niewidzialność.
+
+​`);
+		await actions.send_message(channel_id, `​
+
+**Uwaga**
+
+    • W celu zbalansowania rozgrywki, Znikający nie może korzystać z otworów wentylacyjnych.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Underdog
+		roles_id.impostors['Underdog'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_underdog.png', embed_colors.red, 'Underdog', '• Nazwa: **Underdog** (Słabeusz)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_message(channel_id, `​
+
+**Uwagi**
+
+    • Słabeusz to oszust z wydłużonym czasem odnowienia zabójstwa.
+    • Gdy umrze jego partner, czas odnowienia zabójstwa Słabeusza zostanie skrócony.
+
+​`);
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Słabeusza.
+
+> **Underdog** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Słabeusza w grze.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Undertaker
+		roles_id.impostors['Undertaker'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tou/role_undertaker.png', embed_colors.red, 'Undertaker', '• Nazwa: **Undertaker** (Grabarz)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.red, 'Drag (Przenieś)', 'Grabarz podnosi ciało i może przenieść je w inne miejsce.', 'Zdolność aktywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Grabarza.
+
+> **Undertaker** (Typ: Procent, Domyślnie: 0%)
+> Szansa na pojawienie się Grabarza w grze.
+> 
+> **Undertaker Drag Cooldown** (Typ: Czas, Domyślnie: 25s)
+> Czas odnowienia się umiejętności aktywnej Przenieś.
+
+​`);
+
+		log('Send impostor roles: Complete');
+
+		// Spis ról (dół)
+		let crewmates = [];
+		for (const [name, id] of Object.entries(roles_id.crewmates)) {
+			crewmates.push(`[${name}](https://discord.com/channels/${guild_id}/${channel_id}/${id})`);
+		}
+
+		let neutrals = [];
+		for (const [name, id] of Object.entries(roles_id.neutrals)) {
+			neutrals.push(`[${name}](https://discord.com/channels/${guild_id}/${channel_id}/${id})`);
+		}
+
+		let impostors = [];
+		for (const [name, id] of Object.entries(roles_id.impostors)) {
+			impostors.push(`[${name}](https://discord.com/channels/${guild_id}/${channel_id}/${id})`);
+		}
+
+		crewmates = `Wspólnicy\n\n${crewmates.join('\n')}`;
+		neutrals = `Role neutralne\n\n${neutrals.join('\n')}`;
+		impostors = `Oszuści\n\n${impostors.join('\n')}`;
+
+		log('Send bottom toc: Start');
+		await actions.send_embed(channel_id, embed_colors.green, null, crewmates);
+		await actions.send_embed(channel_id, embed_colors.gray, null, neutrals);
+		await actions.send_embed(channel_id, embed_colors.red, null, impostors);
+		log('Send bottom toc: Complete');
+
+		log('Edit top toc: Start');
+		await actions.edit_embed(channel_id, toc_top_crewmates_id, embed_colors.green, null, crewmates);
+		await actions.edit_embed(channel_id, toc_top_neutrals_id, embed_colors.gray, null, neutrals);
+		await actions.edit_embed(channel_id, toc_top_impostors_id, embed_colors.red, null, impostors);
+		log('Edit top toc: Complete');
+
+		log('Pin top toc: Start');
+		await actions.pin_message(channel_id, toc_top_crewmates_id);
+		await actions.pin_message(channel_id, toc_top_neutrals_id);
+		await actions.pin_message(channel_id, toc_top_impostors_id);
+		log('Pin top toc: Complete');
+
+		log('Remove pushpins: Start');
+		await actions.remove_pushpins(channel_id);
+		log('Remove pushpins: Complete');
+
+		log('Update channel: Complete');
+	};
+
 	actions.update_tor_desc = async (guild_id, channel_id) => {
 		log('Update channel: Start');
 		
@@ -427,7 +1194,7 @@ Ustawienia dla roli Latarnika.
 
 		// Lover
 		roles_id.crewmates['Lover'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/role_lover.png', embed_colors.green, 'Lover', '• Nazwa: **Lover** (Kochanek)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
-		await actions.send_embed(channel_id, embed_colors.green, 'Love (Miłość)', 'Kochanek zawsze pojawia się w parze z drugim Kochankiem albo z OszuKochankiem. Celem Kochanka jest pozostanie przy życiu do końca gry. Jeśli partner Kochanka umrze, Kochanek popełni samobójstwo (jeśli opcja *Both Lovers Die* jest aktywna). Kochanek nie zna roli swojego partnera, wie tylko, kto nim jest. Partnerzy wygrywają, jeśli obaj będą żywi wśród ostatnich 3 graczy, ale mogą również wygrać swoją odpowiednią rolą. Jeśli wspólnicy wygrają, a wśród nich jest dwóch Kochanków, wówczas wspólnicy wygrywają, a Kochankowie zdobywają podwójne zwycięstwo. Jeśli ostatnimi 3 żywymi osobami będzie Kochanek, OszuKochanek oraz inny oszust, wówczas wygrywają jedynie partnerzy jako Solo Zwycięstwo Kochanków. Jeśli w grze jest OszuKochanek, zadania Kochanka nie będą liczone do progresu paska zadań, dopóki OszuKochanek żyje.', 'Zdolność pasywna');
+		await actions.send_embed(channel_id, embed_colors.green, 'Love (Miłość)', 'Kochanek zawsze pojawia się w parze z drugim Kochankiem albo z OszuKochankiem. Celem Kochanka jest pozostanie przy życiu do końca gry. Jeśli partner Kochanka umrze, Kochanek popełni samobójstwo (jeśli opcja *Both Lovers Die* jest aktywna). Kochanek nie zna roli swojego partnera, wie tylko, kto nim jest. Partnerzy wygrywają, jeśli obaj będą żywi wśród ostatnich 3 graczy, ale mogą również wygrać swoją odpowiednią rolą. Jeśli wspólnicy wygrają, a wśród nich jest dwóch Kochanków, wówczas wspólnicy wygrywają, a Kochankowie zdobywają podwójne zwycięstwo. Jeśli ostatnimi 3 żywymi postaciami będzie Kochanek, OszuKochanek oraz inny oszust, wówczas wygrywają jedynie partnerzy jako Solo Zwycięstwo Kochanków. Jeśli w grze jest OszuKochanek, zadania Kochanka nie będą liczone do progresu paska zadań, dopóki OszuKochanek żyje.', 'Zdolność pasywna');
 		await actions.send_message(channel_id, `​
 
 **Uwagi**
@@ -1173,7 +1940,7 @@ Ustawienia wspólne dla ról Ojca Chrzestnego, Mafiozo oraz Woźnego.
 
 		// ImpLover
 		roles_id.impostors['ImpLover'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/role_implover.png', embed_colors.red, 'ImpLover', '• Nazwa: **ImpLover** (OszuKochanek)\n• Drużyna: **Impostors** (Oszuści)')).body.id;
-		await actions.send_embed(channel_id, embed_colors.red, 'Love (Miłość)', 'OszuKochanek zawsze pojawia się w parze z Kochankiem. Celem OszuKochanka jest pozostanie przy życiu do końca gry. Jeśli Kochanek umrze, OszuKochanek popełni samobójstwo (jeśli opcja *Both Lovers Die* jest aktywna). OszuKochanek wie, kim jest jego partner. Partnerzy wygrywają, jeśli obaj będą żywi wśród ostatnich 3 graczy, ale mogą również wygrać swoją odpowiednią rolą. Jeśli ostatnimi 3 żywymi osobami będzie Kochanek, OszuKochanek oraz inny oszust, wówczas wygrywają jedynie partnerzy jako Solo Zwycięstwo Kochanków. Zadania Kochanka nie będą liczone do progresu paska zadań, dopóki OszuKochanek żyje.', 'Zdolność pasywna');
+		await actions.send_embed(channel_id, embed_colors.red, 'Love (Miłość)', 'OszuKochanek zawsze pojawia się w parze z Kochankiem. Celem OszuKochanka jest pozostanie przy życiu do końca gry. Jeśli Kochanek umrze, OszuKochanek popełni samobójstwo (jeśli opcja *Both Lovers Die* jest aktywna). OszuKochanek wie, kim jest jego partner. Partnerzy wygrywają, jeśli obaj będą żywi wśród ostatnich 3 graczy, ale mogą również wygrać swoją odpowiednią rolą. Jeśli ostatnimi 3 żywymi postaciami będzie Kochanek, OszuKochanek oraz inny oszust, wówczas wygrywają jedynie partnerzy jako Solo Zwycięstwo Kochanków. Zadania Kochanka nie będą liczone do progresu paska zadań, dopóki OszuKochanek żyje.', 'Zdolność pasywna');
 		await actions.send_message(channel_id, `​
 
 **Uwagi**
@@ -1479,6 +2246,20 @@ Ustawienia dla roli Czarownika.
 				const channel_id = e?.instance?.props?.channel?.id;
 				if (channel_id == null)
 					return;
+
+				// TOU #role
+				if (channels.tou.role.includes(channel_id)) {
+					let [children, index] = BDFDB.ContextMenuUtils.findItem(e.returnvalue, {id: 'devmode-copy-id', group: true});
+					let contextMenuItems = [];
+
+					contextMenuItems.push(BDFDB.ContextMenuUtils.createItem(BDFDB.LibraryComponents.MenuItems.MenuItem, {
+						label: 'Aktualizuj treść kanału',
+						id: config.info.name + '-update-tou-desc',
+						action: _ => actions.update_tou_desc(guild_id, channel_id),
+					}));
+
+					children.splice(index > -1 ? index : children.length, 0, BDFDB.ContextMenuUtils.createItem(BDFDB.LibraryComponents.MenuItems.MenuGroup, {children: contextMenuItems}));
+				}
 
 				// TOR #role
 				if (channels.tor.role.includes(channel_id)) {

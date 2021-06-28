@@ -18,6 +18,6 @@ Menu kontekstowe kanału rozszerzone jest o opcję `Aktualizuj treść kanału`,
 1. Przypina górny spis treści
 1. Usuwa informacje o przypiętych postach
 
-#### Kanały z obsługiwaną opcją aktualizacji tresci
+#### Kanały z obsługiwaną opcją aktualizacji treści
 
 - The Other Roles: `#role`

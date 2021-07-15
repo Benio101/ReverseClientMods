@@ -20,4 +20,5 @@ Menu kontekstowe kanału rozszerzone jest o opcję `Aktualizuj treść kanału`,
 
 #### Kanały z obsługiwaną opcją aktualizacji treści
 
+- Town Of Us: `#role`
 - The Other Roles: `#role`

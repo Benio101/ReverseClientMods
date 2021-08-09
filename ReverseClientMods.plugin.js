@@ -1058,6 +1058,33 @@ Ustawienia dla roli Grabarza.
 		// Send crewmate roles
 		log('Send crewmate roles: Start');
 
+		// Bait
+		roles_id.crewmates['Bait'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/role_bait.png', embed_colors.green, 'Bait', '• Nazwa: **Bait** (Przynęta)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
+		await actions.send_embed(channel_id, embed_colors.green, 'Force Report (Wymuszenie Zgłoszenia)', 'Przynęta zmusza zabójcę do zgłoszenia zabójstwa.', 'Zdolność pasywna');
+		await actions.send_embed(channel_id, embed_colors.green, 'X-Ray (Prześwietlenie)', 'Przynęta widzi, gdy ktoś znajduje się w otworze wentylacyjnym.', 'Zdolność pasywna');
+		await actions.send_message(channel_id, `​​​​​
+
+**Ustawienia**
+Ustawienia dla roli Przynęty.
+
+> **Bait Spawn Chance**
+> Szansa na pojawienie się Przynęty w grze.
+> 
+> **Bait Highlight All Vents**
+> Czy Prześwietlenie podświetla wszystkie otwory wentylacyjne, gdy ktoś znajduje się w środku.
+> 
+>     • *True*
+>        Podświetlone będą wszystkie otwory wentylacyjne, gdy ktoś znajduje się w środku.
+> 
+>     • *False*
+>        Podświetlone będą jedynie te otwory wentylacyjne, w których ktoś się faktycznie znajduje.
+> 
+> **Bait Report Delay**
+> Czas, po którym zabójca zgłosi ciało zabitej Przynęty.
+
+​`);
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
 		// Detective
 		roles_id.crewmates['Detective'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/role_detective.png', embed_colors.green, 'Detective', '• Nazwa: **Detective** (Detektyw)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
 		await actions.send_embed(channel_id, embed_colors.green, 'Footprints (Ślady stóp)', 'Detektyw widzi ślady stóp pozostawione przez inne postaci.', 'Zdolność pasywna');
@@ -1274,6 +1301,9 @@ Ustawienia dla roli Medyka.
 > 
 > **Shielded Player Sees Murder Attempt**
 > Czy postać z Tarczą Medyka ma widzieć błysk, gdy ktoś próbuje ją zabić.
+> 
+> **Shield Will Be Set After Next Meeting**
+> Czy Tarcza Medyka ma się pojawić dopiero po następnym spotkaniu.
 
 ​`);
 		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
@@ -1460,7 +1490,7 @@ Ustawienie dla roli Zabieracza.
 
 		// Snitch
 		roles_id.crewmates['Snitch'] = (await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/role_snitch.png', embed_colors.green, 'Snitch', '• Nazwa: **Snitch** (Kapuś)\n• Drużyna: **Crewmates** (Wspólnicy)')).body.id;
-		await actions.send_embed(channel_id, embed_colors.green, 'Reveal (Ujawnienie)', 'Kiedy Kapuś ukończy wszystkie zadania, pojawią się Strzałki (widoczne tylko dla Kapusia), które wskazują na oszustów. Kiedy Kapusiowi zostanie liczba zadań określona opcją *Task Count Where Impostors See Snitch*, zostanie ujawniony oszustom, również za pomocą Strzałki.', 'Zdolność pasywna');
+		await actions.send_embed(channel_id, embed_colors.green, 'Reveal (Ujawnienie)', 'Kiedy Kapuś ukończy wszystkie zadania, pojawią się Strzałki (widoczne tylko dla Kapusia), które wskazują na oszustów (lub drużynę Szakala, jeśli opcja *Include Team Jackal* jest aktywna). Kiedy Kapusiowi zostanie liczba zadań określona opcją *Task Count Where Impostors See Snitch*, zostanie ujawniony oszustom, również za pomocą Strzałki.', 'Zdolność pasywna');
 		await actions.send_image(channel_id, 'https://raw.githubusercontent.com/Benio101/ReverseClientMods/main/res/tor/indicator_arrow.png', embed_colors.blue, 'Wskaźnik', '• Strzałka');
 		await actions.send_message(channel_id, `​
 
@@ -1472,6 +1502,12 @@ Ustawienia dla roli Kapusia.
 > 
 > **Task Count Where Impostors See Snitch**
 > Odkąd Kapusiowi zostanie tyle zadań do wykonania, oszuści zobaczą go za pomocą Strzałki.
+> 
+> **Include Team Jackal**
+> Czy Strzałki mają również wskazywać na drużynę Szakala.
+> 
+> **Use Different Arrow Color For Team Jackal**
+> Użyj innego koloru Strzałek wskazujących na drużynę Szakala.
 
 ​`);
 		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
@@ -1568,6 +1604,9 @@ Ustawienia dla roli Śledczego.
 > 
 > **Tracker Update Intervall**
 > Jak często pozycja śledzonej postaci będzie się aktualizować.
+> 
+> **Tracker Reset Target After Meeting**
+> Czy cel Śledczego zostanie zresetowany po spotkaniu.
 
 ​`);
 		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);

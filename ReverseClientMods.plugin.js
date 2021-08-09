@@ -28,11 +28,11 @@ module.exports = (() => {
 			author: 'Benio',
 			authorId: '231850998279176193',
 			invite: 'reversecommunity',
-			version: '1.2.0',
+			version: '1.2.1',
 		},
 		changeLog: {
 			added: {
-				'Town Of Us': 'Dodano treść kanału #role do aktualizacji'
+				'The Other Roles': 'Dodano nową zawartość z TOR 2.8.0'
 			},
 			// fixed: {},
 			// improved: {},

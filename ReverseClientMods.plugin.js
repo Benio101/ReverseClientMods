@@ -2534,6 +2534,20 @@ Rola: **Impostor** (Oszust)
 
 					children.splice(index > -1 ? index : children.length, 0, BDFDB.ContextMenuUtils.createItem(BDFDB.LibraryComponents.MenuItems.MenuGroup, {children: contextMenuItems}));
 				}
+
+				// TOP #role
+				if (channels.top.role.includes(channel_id)) {
+					let [children, index] = BDFDB.ContextMenuUtils.findItem(e.returnvalue, {id: 'devmode-copy-id', group: true});
+					let contextMenuItems = [];
+
+					contextMenuItems.push(BDFDB.ContextMenuUtils.createItem(BDFDB.LibraryComponents.MenuItems.MenuItem, {
+						label: 'Aktualizuj treść kanału',
+						id: config.info.name + '-update-top-desc',
+						action: _ => actions.update_top_desc(guild_id, channel_id),
+					}));
+
+					children.splice(index > -1 ? index : children.length, 0, BDFDB.ContextMenuUtils.createItem(BDFDB.LibraryComponents.MenuItems.MenuGroup, {children: contextMenuItems}));
+				}
 			}
 		};
 	})(window.BDFDB_Global.PluginUtils.buildPlugin(config));

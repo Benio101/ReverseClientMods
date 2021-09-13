@@ -2330,36 +2330,27 @@ Ustawienia dla roli Czarownika.
 		// Engineer
 		roles_id.crewmates['Engineer'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/FF9cXaN.png', 0xF8BF14 /* 248, 191, 20 */, 'Engineer (Inżynier)', `Może naprawić jeden sabotaż na grę z dowolnego miejsca na mapie.
 
-Rola: **Crewmate** (Wspólnik)
-**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Crewmate** (Wspólnik)`, 'Warunek zwycięstwa: Taki sam, jak wspólników')).body.id;
 
 		// Locksmith
 		roles_id.crewmates['Locksmith'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/kr0fvIV.png', 0x3D86C6 /* 61, 134, 198 */, 'Locksmith (Ślusarz)', `Może otwierać oraz zamykać drzwi (domyślnie 2 razy na grę).
 
-Rola: **Crewmate** (Wspólnik)
-**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Crewmate** (Wspólnik)`, 'Warunek zwycięstwa: Taki sam, jak wspólników')).body.id;
 
 		// Oracle
 		roles_id.crewmates['Oracle'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/CQJD8X9.png', 0x2C4BC9 /* 44, 75, 201 */, 'Oracle (Wyrocznia)', `Może przewidzieć przynależność innego gracza. Drużyna tego gracza zostanie ujawniona wszystkim po zgłoszeniu ciała Wyroczni.
 
-Rola: **Crewmate** (Wspólnik)
-**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Crewmate** (Wspólnik)`, 'Warunek zwycięstwa: Taki sam, jak wspólników')).body.id;
 
 		// Sheriff
 		roles_id.crewmates['Sheriff'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/4Wh5Eyf.png', 0xC49645 /* 196, 150, 69 */, 'Sheriff (Szeryf)', `Może zabijać oszustów oraz role neutralne. W przypadku próby strzału we wspólnika, Szeryf zamiast tego zabije samego siebie.
 
-Rola: **Crewmate** (Wspólnik)
-**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Crewmate** (Wspólnik)`, 'Warunek zwycięstwa: Taki sam, jak wspólników')).body.id;
 
 		// Snitch
 		roles_id.crewmates['Snitch'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/lRB0OQ3.png', 0x00FFDD /* 0, 255, 221 */, 'Snitch (Kapuś)', `Po ukończeniu wszystkich zadań, widzi strzałki wskazujące na oszustów. Oszuści natomiast zostaną poinformowani, gdy Kapuś będzie bliski ukończenia swoich zadań i od tego momentu będą widzieć strzałki na niego wskazujące.
 
-Rola: **Crewmate** (Wspólnik)
-**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
+Rola: **Crewmate** (Wspólnik)`, 'Warunek zwycięstwa: Taki sam, jak wspólników')).body.id;
 		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
 
 		log('Send crewmate roles: Complete');
@@ -2368,24 +2359,19 @@ Rola: **Crewmate** (Wspólnik)
 		log('Send neutral roles: Start');
 
 		// Jester
-		roles_id.crewmates['Jester'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/pmGHivT.png', 0xFF8CEE /* 255, 140, 238 */, 'Jester (Błazen)', `Ma za zadanie zostać wygłosowanym podczas spotkania.
+		roles_id.neutrals['Jester'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/pmGHivT.png', 0xFF8CEE /* 255, 140, 238 */, 'Jester (Błazen)', `Ma za zadanie zostać wygłosowanym podczas spotkania.
 
-Rola: **Neutral** (Neutralna)
-**Warunek zwycięstwa:** Zostanie wygłosowanym`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Neutral** (Neutralna)`, 'Warunek zwycięstwa: Zostanie wygłosowanym')).body.id;
 
 		// Phantom
-		roles_id.crewmates['Phantom'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/OFfJC3i.png', 0x8CFFFF /* 140, 255, 255 */, 'Phantom (Upiór)', `Po śmierci staje się wpół niewidzialny i ma zadanie ukończyć wszystkie nowo otrzymane zadania, a następnie zwołać spotkanie bez zostania złapanym.
+		roles_id.neutrals['Phantom'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/OFfJC3i.png', 0x8CFFFF /* 140, 255, 255 */, 'Phantom (Upiór)', `Po śmierci staje się wpół niewidzialny i ma zadanie ukończyć wszystkie nowo otrzymane zadania, a następnie zwołać spotkanie bez zostania złapanym.
 
-Rola: **Neutral** (Neutralna)
-**Warunek zwycięstwa:** Ukończenie swoich zadań oraz zwołanie spotkania`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Neutral** (Neutralna)`, 'Warunek zwycięstwa: Ukończenie swoich zadań oraz zwołanie spotkania')).body.id;
 
 		// Serial Killer
-		roles_id.crewmates['Serial Killer'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Li3ayoD.png', 0xFF547C /* 255, 84, 124 */, 'Serial Killer (Seryjny Zabójca)', `Ma za zadanie zabić wszystkich w lobby.
+		roles_id.neutrals['Serial Killer'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Li3ayoD.png', 0xFF547C /* 255, 84, 124 */, 'Serial Killer (Seryjny Zabójca)', `Ma za zadanie zabić wszystkich w lobby.
 
-Rola: **Neutral** (Neutralna)
-**Warunek zwycięstwa:** Zabicie wszystkich`)).body.id;
+Rola: **Neutral** (Neutralna)`, 'Warunek zwycięstwa: Zabicie wszystkich')).body.id;
 		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
 
 		log('Send neutral roles: Complete');
@@ -2394,25 +2380,19 @@ Rola: **Neutral** (Neutralna)
 		log('Send impostor roles: Start');
 
 		// Grenadier
-		roles_id.crewmates['Grenadier'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Di4YyVy.png', 0x728F3D /* 114, 143, 61 */, 'Grenadier (Żołnierz)', `Może rzucać granatami, by oślepiać innych graczy.
-
-Rola: **Impostor** (Oszust)
-**Warunek zwycięstwa:** Taki sam, jak oszustów`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+		roles_id.impostors['Grenadier'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Di4YyVy.png', 0x728F3D /* 114, 143, 61 */, 'Grenadier (Żołnierz)', `Może rzucać granatami, by oślepiać innych graczy.
+		
+Rola: **Impostor** (Oszust)`, 'Warunek zwycięstwa: Taki sam, jak oszustów')).body.id;
 
 		// Morphling
-		roles_id.crewmates['Morphling'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Th3y5eA.png', 0x40EB73 /* 64, 235, 115 */, 'Morphling (Zmiennokształtny)', `Może przybierać wygląd innych postaci, lecz nie może korzystać z otworów wentylacyjnych.
+		roles_id.impostors['Morphling'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Th3y5eA.png', 0x40EB73 /* 64, 235, 115 */, 'Morphling (Zmiennokształtny)', `Może przybierać wygląd innych postaci, lecz nie może korzystać z otworów wentylacyjnych.
 
-Rola: **Impostor** (Oszust)
-**Warunek zwycięstwa:** Taki sam, jak oszustów`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Impostor** (Oszust)`, 'Warunek zwycięstwa: Taki sam, jak oszustów')).body.id;
 
 		// Swooper
-		roles_id.crewmates['Swooper'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/rGsLcy2.png', 0x969696 /* 150, 150, 150 */, 'Swooper (Znikający)', `Może stawać się na chwilę niewidzialnym, lecz nie może korzystać z otworów wentylacyjnych.
+		roles_id.impostors['Swooper'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/rGsLcy2.png', 0x969696 /* 150, 150, 150 */, 'Swooper (Znikający)', `Może stawać się na chwilę niewidzialnym, lecz nie może korzystać z otworów wentylacyjnych.
 
-Rola: **Impostor** (Oszust)
-**Warunek zwycięstwa:** Taki sam, jak oszustów`)).body.id;
-		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+Rola: **Impostor** (Oszust)`, 'Warunek zwycięstwa: Taki sam, jak oszustów')).body.id;
 
 		log('Send impostor roles: Complete');
 

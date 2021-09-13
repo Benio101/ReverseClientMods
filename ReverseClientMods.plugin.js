@@ -43,7 +43,7 @@ module.exports = (() => {
 		{
 			send_message_timeout:   {min: 1e3, max: 2e3},
 			edit_message_timeout:   {min: 1e3, max: 2e3},
-			delete_message_timeout: {min: 1e3, max: 2e3},
+			delete_message_timeout: {min: 2e3, max: 4e3},
 			pin_message_timeout:    {min: 1e3, max: 2e3},
 			
 			wait_for_message_interval: 1e2,

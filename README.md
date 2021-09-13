@@ -22,3 +22,4 @@ Menu kontekstowe kanału rozszerzone jest o opcję `Aktualizuj treść kanału`,
 
 - Town Of Us: `#role`
 - The Other Roles: `#role`
+- Town Of Polus: `#role`

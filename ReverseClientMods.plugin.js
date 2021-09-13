@@ -28,11 +28,11 @@ module.exports = (() => {
 			author: 'Benio',
 			authorId: '231850998279176193',
 			invite: 'reversecommunity',
-			version: '1.2.1',
+			version: '1.3',
 		},
 		changeLog: {
 			added: {
-				'The Other Roles': 'Dodano nową zawartość z TOR 2.8.0'
+				'Town Of Polus': 'Dodano wsparcie dla Town Of Polus'
 			},
 			// fixed: {},
 			// improved: {},
@@ -60,6 +60,9 @@ module.exports = (() => {
 		},
 		tor: {
 			role: ['842550568757231666'],
+		},
+		top: {
+			role: ['843595758737686528'],
 		},
 	};
 
@@ -93,6 +96,14 @@ module.exports = (() => {
 			color: #4fdc7b;
 		}
 		#channel-context-${config.info.name + '-update-tor-desc'}[class*=focus] {
+			color: #FFFFFF;
+			background: #3ba55c;
+		}
+
+		#channel-context-${config.info.name + '-update-top-desc'} {
+			color: #4fdc7b;
+		}
+		#channel-context-${config.info.name + '-update-top-desc'}[class*=focus] {
 			color: #FFFFFF;
 			background: #3ba55c;
 		}
@@ -183,6 +194,26 @@ module.exports = (() => {
 		return return_value;
 	}
 
+	actions.send_thumbnail = async (channel_id, url, color, title = null, description = null, footer = null) => {
+		let return_value;
+		discord_classes.enqueue.enqueue({
+			type: enqueue_types.send,
+			message: {
+				channelId: channel_id,
+				content: '',
+				tts: false,
+				nonce: discord_actions.createBotMessage(channel_id, '').id,
+				embed: {thumbnail: {url: url}, color: color, title: title, description: description, footer: {text: footer}},
+			},
+		}, r => return_value = r);
+	
+		while (return_value === undefined)
+			await timeout(config.time.wait_for_message_interval);
+	
+		await timeout(random(config.time.send_message_timeout.min, config.time.send_message_timeout.max));
+		return return_value;
+	}
+
 	actions.edit_message = async (channel_id, message_id, message) => {
 		let return_value;
 		discord_classes.enqueue.enqueue({
@@ -228,6 +259,24 @@ module.exports = (() => {
 				channelId: channel_id,
 				messageId: message_id,
 				embed: {type: 'image', image: {url: url}, color: color, title: title, description: description, footer: {text: footer}},
+			},
+		}, r => return_value = r);
+	
+		while (return_value === undefined)
+			await timeout(config.time.wait_for_message_interval);
+	
+		await timeout(random(config.time.edit_message_timeout.min, config.time.edit_message_timeout.max));
+		return return_value;
+	};
+
+	actions.edit_thumbnail = async (channel_id, message_id, url, color, title = null, description = null, footer = null) => {
+		let return_value;
+		discord_classes.enqueue.enqueue({
+			type: enqueue_types.edit,
+			message: {
+				channelId: channel_id,
+				messageId: message_id,
+				embed: {thumbnail: {url: url}, color: color, title: title, description: description, footer: {text: footer}},
 			},
 		}, r => return_value = r);
 	
@@ -2200,6 +2249,170 @@ Ustawienia dla roli Czarownika.
 > Czas, przez który Czarownik nie będzie mógł się ruszać po zabiciu umiejętnością Zabicie Klątwą.
 
 ​`);
+
+		log('Send impostor roles: Complete');
+
+		// Spis ról (dół)
+		let crewmates = [];
+		for (const [name, id] of Object.entries(roles_id.crewmates)) {
+			crewmates.push(`[${name}](https://discord.com/channels/${guild_id}/${channel_id}/${id})`);
+		}
+
+		let neutrals = [];
+		for (const [name, id] of Object.entries(roles_id.neutrals)) {
+			neutrals.push(`[${name}](https://discord.com/channels/${guild_id}/${channel_id}/${id})`);
+		}
+
+		let impostors = [];
+		for (const [name, id] of Object.entries(roles_id.impostors)) {
+			impostors.push(`[${name}](https://discord.com/channels/${guild_id}/${channel_id}/${id})`);
+		}
+
+		crewmates = `Wspólnicy\n\n${crewmates.join('\n')}`;
+		neutrals = `Role neutralne\n\n${neutrals.join('\n')}`;
+		impostors = `Oszuści\n\n${impostors.join('\n')}`;
+
+		log('Send bottom toc: Start');
+		await actions.send_embed(channel_id, embed_colors.green, null, crewmates);
+		await actions.send_embed(channel_id, embed_colors.gray, null, neutrals);
+		await actions.send_embed(channel_id, embed_colors.red, null, impostors);
+		log('Send bottom toc: Complete');
+
+		log('Edit top toc: Start');
+		await actions.edit_embed(channel_id, toc_top_crewmates_id, embed_colors.green, null, crewmates);
+		await actions.edit_embed(channel_id, toc_top_neutrals_id, embed_colors.gray, null, neutrals);
+		await actions.edit_embed(channel_id, toc_top_impostors_id, embed_colors.red, null, impostors);
+		log('Edit top toc: Complete');
+
+		log('Pin top toc: Start');
+		await actions.pin_message(channel_id, toc_top_crewmates_id);
+		await actions.pin_message(channel_id, toc_top_neutrals_id);
+		await actions.pin_message(channel_id, toc_top_impostors_id);
+		log('Pin top toc: Complete');
+
+		log('Remove pushpins: Start');
+		await actions.remove_pushpins(channel_id);
+		log('Remove pushpins: Complete');
+
+		log('Update channel: Complete');
+	};
+
+	actions.update_top_desc = async (guild_id, channel_id) => {
+		log('Update channel: Start');
+		
+		const roles_id = {
+			crewmates: {},
+			neutrals: {},
+			impostors: {},
+		};
+
+		// Purge channel
+		log('Purge channel: Start');
+		await actions.purge_channel(channel_id);
+		log('Purge channel: Complete');
+
+		// Prepare top toc placeholders
+		log('Prepare top toc placeholders: Start');
+		const toc_top_crewmates_id = (await actions.send_message(channel_id, '​')).body.id;
+		const toc_top_neutrals_id = (await actions.send_message(channel_id, '​')).body.id;
+		const toc_top_impostors_id = (await actions.send_message(channel_id, '​')).body.id;
+		log('Prepare top toc placeholders: Complete');
+
+		const spacer_text =
+				`[Role wspólników](https://discord.com/channels/${guild_id}/${channel_id}/${toc_top_crewmates_id})\n`
+			+	`[Role neutralne](https://discord.com/channels/${guild_id}/${channel_id}/${toc_top_neutrals_id})\n`
+			+	`[Role oszustów](https://discord.com/channels/${guild_id}/${channel_id}/${toc_top_impostors_id})`
+		;
+
+		// Send crewmate roles
+		log('Send crewmate roles: Start');
+
+		// Engineer
+		roles_id.crewmates['Engineer'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/FF9cXaN.png', 0xF8BF14 /* 248, 191, 20 */, 'Engineer (Inżynier)', `Może naprawić jeden sabotaż na grę z dowolnego miejsca na mapie.
+
+Rola: **Crewmate** (Wspólnik)
+**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Locksmith
+		roles_id.crewmates['Locksmith'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/kr0fvIV.png', 0x3D86C6 /* 61, 134, 198 */, 'Locksmith (Ślusarz)', `Może otwierać oraz zamykać drzwi (domyślnie 2 razy na grę).
+
+Rola: **Crewmate** (Wspólnik)
+**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Oracle
+		roles_id.crewmates['Oracle'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/CQJD8X9.png', 0x2C4BC9 /* 44, 75, 201 */, 'Oracle (Wyrocznia)', `Może przewidzieć przynależność innego gracza. Drużyna tego gracza zostanie ujawniona wszystkim po zgłoszeniu ciała Wyroczni.
+
+Rola: **Crewmate** (Wspólnik)
+**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Sheriff
+		roles_id.crewmates['Sheriff'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/4Wh5Eyf.png', 0xC49645 /* 196, 150, 69 */, 'Sheriff (Szeryf)', `Może zabijać oszustów oraz role neutralne. W przypadku próby strzału we wspólnika, Szeryf zamiast tego zabije samego siebie.
+
+Rola: **Crewmate** (Wspólnik)
+**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Snitch
+		roles_id.crewmates['Snitch'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/lRB0OQ3.png', 0x00FFDD /* 0, 255, 221 */, 'Snitch (Kapuś)', `Po ukończeniu wszystkich zadań, widzi strzałki wskazujące na oszustów. Oszuści natomiast zostaną poinformowani, gdy Kapuś będzie bliski ukończenia swoich zadań i od tego momentu będą widzieć strzałki na niego wskazujące.
+
+Rola: **Crewmate** (Wspólnik)
+**Warunek zwycięstwa:** Taki sam, jak wspólników`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		log('Send crewmate roles: Complete');
+
+		// Send neutral roles
+		log('Send neutral roles: Start');
+
+		// Jester
+		roles_id.crewmates['Jester'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/pmGHivT.png', 0xFF8CEE /* 255, 140, 238 */, 'Jester (Błazen)', `Ma za zadanie zostać wygłosowanym podczas spotkania.
+
+Rola: **Neutral** (Neutralna)
+**Warunek zwycięstwa:** Zostanie wygłosowanym`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Phantom
+		roles_id.crewmates['Phantom'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/OFfJC3i.png', 0x8CFFFF /* 140, 255, 255 */, 'Phantom (Upiór)', `Po śmierci staje się wpół niewidzialny i ma zadanie ukończyć wszystkie nowo otrzymane zadania, a następnie zwołać spotkanie bez zostania złapanym.
+
+Rola: **Neutral** (Neutralna)
+**Warunek zwycięstwa:** Ukończenie swoich zadań oraz zwołanie spotkania`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Serial Killer
+		roles_id.crewmates['Serial Killer'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Li3ayoD.png', 0xFF547C /* 255, 84, 124 */, 'Serial Killer (Seryjny Zabójca)', `Ma za zadanie zabić wszystkich w lobby.
+
+Rola: **Neutral** (Neutralna)
+**Warunek zwycięstwa:** Zabicie wszystkich`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		log('Send neutral roles: Complete');
+		
+		// Send impostor roles
+		log('Send impostor roles: Start');
+
+		// Grenadier
+		roles_id.crewmates['Grenadier'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Di4YyVy.png', 0x728F3D /* 114, 143, 61 */, 'Grenadier (Żołnierz)', `Może rzucać granatami, by oślepiać innych graczy.
+
+Rola: **Impostor** (Oszust)
+**Warunek zwycięstwa:** Taki sam, jak oszustów`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Morphling
+		roles_id.crewmates['Morphling'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/Th3y5eA.png', 0x40EB73 /* 64, 235, 115 */, 'Morphling (Zmiennokształtny)', `Może przybierać wygląd innych postaci, lecz nie może korzystać z otworów wentylacyjnych.
+
+Rola: **Impostor** (Oszust)
+**Warunek zwycięstwa:** Taki sam, jak oszustów`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
+
+		// Swooper
+		roles_id.crewmates['Swooper'] = (await actions.send_thumbnail(channel_id, 'https://i.imgur.com/rGsLcy2.png', 0x969696 /* 150, 150, 150 */, 'Swooper (Znikający)', `Może stawać się na chwilę niewidzialnym, lecz nie może korzystać z otworów wentylacyjnych.
+
+Rola: **Impostor** (Oszust)
+**Warunek zwycięstwa:** Taki sam, jak oszustów`)).body.id;
+		await actions.send_embed(channel_id, embed_colors.blue, null, spacer_text);
 
 		log('Send impostor roles: Complete');
 

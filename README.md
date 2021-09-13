@@ -1,6 +1,6 @@
 # ReverseClientMods
 
-![](https://github.com/Benio101/ReverseClientMods/blob/main/res/meta/epic_reverse_logo.png)
+![](https://github.com/Benio101/ReverseClientMods/blob/master/res/meta/epic_reverse_logo.png)
 
 ReverseClientMods jest pluginem do [BandagedBD](https://github.com/rauenzi/BetterDiscordApp), służącym do zarządzania modyfikacjami na serwerze [Reverse Community](https://reverse.community/). ReverseClientMods korzysta z **2** bibliotek będących pluginem do **BandagedBD**, są to:
 - [ZeresPluginLibrary](https://github.com/rauenzi/BDPluginLibrary)
